@@ -20,3 +20,10 @@ shadowJar {
 }
 
 tasks.build.dependsOn tasks.shadowJar
+
+task runWithExecJarExecutable(type: Exec) {
+    dependsOn shadowJar
+    group = "Execution"
+    description = "Run the output executable jar"
+    commandLine "java", "-jar", jar.archiveFile.get()
+}
