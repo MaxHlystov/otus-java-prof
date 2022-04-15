@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
     id 'com.github.johnrengelman.shadow'
 }
 
@@ -10,20 +11,18 @@ dependencies {
     implementation 'com.google.guava:guava'
 }
 
+mainClassName = 'ru.fmtk.khlystov.otus_java.Application'
+
+apply plugin: "java"
+apply plugin: "application"
+
 shadowJar {
     archiveBaseName.set('gradleHelloWorld')
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'ru.fmtk.khlystov.otus_java.Application'
+        attributes 'Main-Class': mainClassName
     }
 }
 
 tasks.build.dependsOn tasks.shadowJar
-
-task runWithExecJarExecutable(type: Exec) {
-    dependsOn shadowJar
-    group = "Execution"
-    description = "Run the output executable jar"
-    commandLine "java", "-jar", jar.archiveFile.get()
-}

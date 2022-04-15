@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+mainClassName = 'ru.fmtk.khlystov.otus_java.Application'
+
+application {
+    mainClass = mainClassName
+}
+
+
+apply plugin: "java"
+apply plugin: "application"
+
+dependencies {
+    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
+
+}
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('annotationRunnerTest')
+    archiveVersion.set('0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    mainClass = mainClassName
+
+    // arguments to pass to the application
+    args "ru.fmtk.khlystov.otus_java.SimpleTest"
+
+}
