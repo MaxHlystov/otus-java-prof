@@ -4,3 +4,4 @@ Khlystov Maksim
 ## Subprojects
 - hw01-gradle
 - hw04-collections
+- hw06-annotations
