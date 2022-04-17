@@ -5,7 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import ru.fmtk.khlystov.otus_java.annotations.After;
 import ru.fmtk.khlystov.otus_java.annotations.Before;
@@ -40,21 +42,41 @@ public class TestRunnerUtils {
         try {
             Constructor<?> ctor = clazz.getConstructor();
             Object obj = ctor.newInstance();
-            runMethods(obj, beforeMethods);
-            runMethods(obj, List.of(method));
-            runMethods(obj, afterMethods);
-            return new TestResult(method);
-
+            runAnyMethodsOrThrow(obj, beforeMethods);
+            runAnyMethodsOrThrow(obj, List.of(method));
+            List<Exception> afterErrors = runAllMethods(obj, afterMethods);
+            if (afterErrors.isEmpty()) {
+                return new TestResult(method);
+            } else {
+                final String errMsg = "Error invoking after methods:\n" +
+                        afterErrors.stream().map(Exception::getMessage)
+                                .collect(Collectors.joining("\n"));
+                return new TestResult(method, new RuntimeException(errMsg));
+            }
         } catch (Exception e) {
             return new TestResult(method, e);
         }
     }
 
-    private static void runMethods(Object obj, Collection<Method> methods
+    private static void runAnyMethodsOrThrow(Object obj, Collection<Method> methods
     ) throws InvocationTargetException, IllegalAccessException {
         for (Method method : methods) {
             method.invoke(obj);
         }
+    }
+
+    private static List<Exception> runAllMethods(Object obj, Collection<Method> methods) {
+        return methods.stream()
+                .map(method -> {
+                    try {
+                        method.invoke(obj);
+                        return null;
+                    } catch (Exception e) {
+                        return e;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public static void printsStat(int testsCnt, TestStat stat) {

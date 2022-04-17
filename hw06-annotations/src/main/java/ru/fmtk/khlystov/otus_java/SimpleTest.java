@@ -1,5 +1,6 @@
 package ru.fmtk.khlystov.otus_java;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,12 @@ public class SimpleTest {
         System.out.println("SimpleTest.clearValues");
         values = Collections.emptyList();
         startStop = "stopped";
+    }
+
+    @After
+    public void afterWithException() throws IOException {
+        System.out.println("Throw an exception");
+        throw new IOException("Test io exception.");
     }
 
     @Test
