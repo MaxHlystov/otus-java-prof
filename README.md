@@ -5,3 +5,5 @@ Khlystov Maksim
 - hw01-gradle
 - hw04-collections
 - hw06-annotations
+- hw08-gc
+- hw10-AOP
