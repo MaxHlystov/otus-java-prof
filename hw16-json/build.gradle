@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+    implementation 'com.google.guava:guava'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'javax.json:javax.json-api'
+    implementation 'org.glassfish:javax.json'
+    implementation 'com.google.protobuf:protobuf-java-util'
+
+    testImplementation('org.junit.jupiter:junit-jupiter-api')
+    testImplementation('org.junit.jupiter:junit-jupiter-engine')
+    testImplementation('org.junit.jupiter:junit-jupiter-params')
+    testImplementation('org.assertj:assertj-core')
+    testImplementation('org.mockito:mockito-core')
+    testImplementation('org.mockito:mockito-junit-jupiter')
+}
+
+def protoSrcDir = "$projectDir/build/generated"
+
+idea {
+    module {
+        sourceDirs += file(protoSrcDir);
+    }
+}
+
+//sourceSets {
+//    main {
+//        proto {
+//            srcDir protoSrcDir
+//        }
+//    }
+//}
+
+//protobuf {
+//    protoc {
+//        artifact = 'com.google.protobuf:protoc:3.19.4'
+//    }
+//    generatedFilesBaseDir = protoSrcDir
+//    generateProtoTasks {
+//        ofSourceSet('main')
+//    }
+//}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
