@@ -43,7 +43,7 @@ allprojects {
             dependency("com.google.code.gson:gson:${Versions.gson}")
             dependency("com.datastax.oss:java-driver-core:${Versions.cassandra}")
 
-            dependency("org.mongodb:mongodb-driver-core:${Versions.mongodb}")
+            dependency ("org.mongodb:mongodb-driver-core:${Versions.mongodb}")
             dependency("org.mongodb:mongodb-driver-sync:${Versions.mongodb}")
             dependency("org.mongodb:bson:${Versions.mongodb}")
 
