@@ -113,7 +113,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                 T obj = entityClassMetaData.getConstructor().newInstance();
                 setField(obj, entityClassMetaData.getIdField(), rs.getLong(entityClassMetaData.getIdField().getName()));
                 for (Field field : entityClassMetaData.getFieldsWithoutId()) {
-                    setField(obj, field, rs.getString(field.getName()));
+                    setField(obj, field, rs.getObject(field.getName()));
                 }
                 return obj;
             }

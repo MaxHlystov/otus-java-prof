@@ -64,7 +64,7 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
     private String logAndResolve(String prefix, StringBuilder stringBuilder) {
         var query = stringBuilder.toString();
-        log.debug(prefix + " " + query);
+        log.debug("{} {}", prefix, query);
         return query;
     }
 
