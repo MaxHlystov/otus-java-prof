@@ -1,32 +1,32 @@
 package ru.fmtk.khlystov.otus_java.atm;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import ru.fmtk.khlystov.otus_java.currencies.BN;
+import ru.fmtk.khlystov.otus_java.currencies.Banknote;
 
-public class AtmImpl<T extends Enum<T> & BN<T>> implements Atm<T> {
+public class AtmImpl<T extends Enum<T> & Banknote<T>> implements Atm<T> {
 
     private final Class<T> banknoteClass;
+    private final Function<T, Cell<T>> cellCreator;
 
-    private final Map<T, BigDecimal> cells;
+    private final Map<T, Cell<T>> cells;
 
-    public AtmImpl(Class<T> banknoteClass) {
+    public AtmImpl(Class<T> banknoteClass, Function<T, Cell<T>> cellCreator) {
         this.banknoteClass = banknoteClass;
+        this.cellCreator = cellCreator;
         this.cells = new EnumMap<>(banknoteClass);
     }
 
     @Override
     public void add(T bankNote, int count) {
         if (count > 0) {
-            BigDecimal result = cells.get(bankNote);
-            if (result == null) {
-                result = BigDecimal.ZERO;
-            }
-            result = result.add(BigDecimal.valueOf(count));
-            cells.put(bankNote, result);
+            Cell<T> cell = cells.computeIfAbsent(bankNote, cellCreator);
+            cell.add(count);
         }
     }
 
@@ -35,7 +35,7 @@ public class AtmImpl<T extends Enum<T> & BN<T>> implements Atm<T> {
         return cells.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> entry.getValue().intValue()));
+                        entry -> entry.getValue().getIntCount()));
     }
 
     @Override
@@ -43,24 +43,24 @@ public class AtmImpl<T extends Enum<T> & BN<T>> implements Atm<T> {
         BigDecimal currentSum = sum;
         final EnumMap<T, Integer> result = new EnumMap<>(this.banknoteClass);
         while (currentSum.compareTo(BigDecimal.ZERO) > 0) {
-            T floorBn = getFloorEntry(currentSum);
-            if (floorBn == null) {
+            Cell<T> floorCell = getFloorEntry(currentSum);
+            if (floorCell == null) {
                 throw new IllegalArgumentException("We cannot cashing sum " + sum);
             }
-            BigDecimal take = takeBanknotesToSum(floorBn, currentSum);
+            BigDecimal take = floorCell.takeBanknotesToSum(currentSum);
             if (BigDecimal.ZERO.compareTo(take) >= 0) {
                 throw new IllegalArgumentException("We cannot cashing sum " + sum);
             }
-            result.put(floorBn, take.intValue());
-            currentSum = currentSum.subtract(floorBn.getValue().multiply(take));
+            result.put(floorCell.getBanknote(), take.intValue());
+            currentSum = currentSum.subtract(floorCell.calcSum(take));
         }
         return result;
     }
 
     @Override
     public BigDecimal calcTotalSum() {
-        return cells.entrySet().stream()
-                .map(entry -> entry.getKey().getValue().multiply(entry.getValue()))
+        return cells.values().stream()
+                .map(Cell::getSum)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -69,47 +69,10 @@ public class AtmImpl<T extends Enum<T> & BN<T>> implements Atm<T> {
         return "ATM{ " + cells.values() + ", sum=" + calcTotalSum() + " }";
     }
 
-    private T getFloorEntry(BigDecimal sum) {
-        return cells.keySet().stream()
-                .filter(key -> key.getValue().compareTo(BigDecimal.ZERO) > 0 && key.getValue().compareTo(sum) <= 0)
-                .max(BN::compareBN)
+    private Cell<T> getFloorEntry(BigDecimal sum) {
+        return cells.values().stream()
+                .filter(cell -> cell.hasSumLessThan(sum))
+                .max(Comparator.naturalOrder())
                 .orElse(null);
     }
-
-    private BigDecimal getCount(T banknote) {
-        if (banknote == null) {
-            throw new IllegalArgumentException("Banknote must not be null");
-        }
-        BigDecimal count = cells.get(banknote);
-        if (count == null) {
-            return BigDecimal.ZERO;
-        }
-        return count;
-    }
-
-    private BigDecimal takePossibleCount(T banknote, BigDecimal takeCount) {
-        if (banknote == null) {
-            throw new IllegalArgumentException("Banknote must not be null");
-        }
-        if (takeCount == null) {
-            throw new IllegalArgumentException("Take count must not be null");
-        }
-        BigDecimal bdCount = getCount(banknote);
-        takeCount = takeCount.min(bdCount);
-        cells.put(banknote, bdCount.subtract(takeCount));
-        return takeCount;
-    }
-
-    private BigDecimal takeBanknotesToSum(T banknote, BigDecimal sum) {
-        BigDecimal bdCount = getCount(banknote);
-        if (bdCount.equals(BigDecimal.ZERO)) {
-            return BigDecimal.ZERO;
-        }
-        BigDecimal needCount = sum.divideToIntegralValue(banknote.getValue());
-        if (needCount.compareTo(BigDecimal.ZERO) > 0) {
-            return takePossibleCount(banknote, needCount);
-        }
-        return BigDecimal.ZERO;
-    }
-
 }

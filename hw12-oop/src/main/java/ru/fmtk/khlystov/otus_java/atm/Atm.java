@@ -3,9 +3,9 @@ package ru.fmtk.khlystov.otus_java.atm;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import ru.fmtk.khlystov.otus_java.currencies.BN;
+import ru.fmtk.khlystov.otus_java.currencies.Banknote;
 
-public interface Atm<T extends Enum<T> & BN<T>> {
+public interface Atm<T extends Enum<T> & Banknote<T>> {
 
     /**
      * принимать банкноты разных номиналов (на каждый номинал должна быть своя ячейка)

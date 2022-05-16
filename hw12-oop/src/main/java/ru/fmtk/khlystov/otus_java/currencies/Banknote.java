@@ -2,10 +2,10 @@ package ru.fmtk.khlystov.otus_java.currencies;
 
 import java.math.BigDecimal;
 
-public interface BN<T extends BN<T>> {
+public interface Banknote<T extends Banknote<T>> {
     BigDecimal getValue();
 
-    default int compareBN(T o) {
+    default int compare(T o) {
         if (o == null) {
             return 1;
         }
