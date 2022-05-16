@@ -1,7 +1,12 @@
 rootProject.name = 'otusJava'
+
 include 'hw01-gradle'
 include 'hw04-collections'
 include 'hw06-annotations'
 include 'hw08-gc'
 include 'hw10-aop'
 include 'hw12-oop'
+include 'hw15-todo'
+include 'hw16-json'
+include 'hw18-jdbc:demo'
+include 'hw18-jdbc:homework'
