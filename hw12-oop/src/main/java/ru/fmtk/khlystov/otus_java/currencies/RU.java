@@ -2,7 +2,7 @@ package ru.fmtk.khlystov.otus_java.currencies;
 
 import java.math.BigDecimal;
 
-public enum RU implements BN<RU> {
+public enum RU implements Banknote<RU> {
     v1000(1000), v100(100), v50(50), v10(10), v1(1), v0001(1, 4);
 
     private final BigDecimal value;

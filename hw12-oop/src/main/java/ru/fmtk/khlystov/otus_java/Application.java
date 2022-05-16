@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 
 import ru.fmtk.khlystov.otus_java.atm.Atm;
 import ru.fmtk.khlystov.otus_java.atm.AtmImpl;
+import ru.fmtk.khlystov.otus_java.atm.CellImpl;
 import ru.fmtk.khlystov.otus_java.currencies.EU;
 
 public class Application {
     public static void main(String[] args) {
         System.out.println("ATM demo");
-        Atm<EU> atmImpl = new AtmImpl<>(EU.class);
+        Atm<EU> atmImpl = new AtmImpl<>(EU.class, CellImpl::new);
         atmImpl.add(EU.v100, 1);
         atmImpl.add(EU.v10, 3);
         System.out.println(atmImpl);

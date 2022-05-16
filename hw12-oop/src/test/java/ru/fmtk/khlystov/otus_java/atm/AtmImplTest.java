@@ -14,7 +14,7 @@ class AtmImplTest {
 
     @Test
     void add_one() {
-        Atm<EU> atm = new AtmImpl<>(EU.class);
+        Atm<EU> atm = new AtmImpl<>(EU.class, CellImpl::new);
         atm.add(EU.v10, 2);
         assertEquals(Map.of(EU.v10, 2), atm.audit());
     }
@@ -72,20 +72,20 @@ class AtmImplTest {
 
     @Test
     void calcTotalSum_forEmptyAtm_isZero() {
-        Atm<RU> atm = new AtmImpl<>(RU.class);
+        Atm<RU> atm = new AtmImpl<>(RU.class, CellImpl::new);
         assertEquals(BigDecimal.ZERO, atm.calcTotalSum());
     }
 
     @Test
     void calcTotalSum_for10By3Atm_is30() {
-        Atm<RU> atm = new AtmImpl<>(RU.class);
+        Atm<RU> atm = new AtmImpl<>(RU.class, CellImpl::new);
         atm.add(RU.v10, 3);
         assertEquals(BigDecimal.valueOf(30), atm.calcTotalSum());
     }
 
     @Test
     void calcTotalSum_for10By3And1By2Atm_is32() {
-        Atm<RU> atm = new AtmImpl<>(RU.class);
+        Atm<RU> atm = new AtmImpl<>(RU.class, CellImpl::new);
         atm.add(RU.v10, 3);
         atm.add(RU.v1, 2);
         assertEquals(BigDecimal.valueOf(32), atm.calcTotalSum());
@@ -99,7 +99,7 @@ class AtmImplTest {
     }
 
     private Atm<RU> getRuAtm() {
-        Atm<RU> atm = new AtmImpl<>(RU.class);
+        Atm<RU> atm = new AtmImpl<>(RU.class, CellImpl::new);
         atm.add(RU.v1, 5);
         atm.add(RU.v10, 4);
         atm.add(RU.v50, 3);
