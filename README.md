@@ -7,4 +7,5 @@ Khlystov Maksim
 - hw06-annotations
 - hw08-gc
 - hw10-AOP
+- hw12-OOP
 - hw15-TODO
