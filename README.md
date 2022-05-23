@@ -9,3 +9,6 @@ Khlystov Maksim
 - hw10-AOP
 - hw12-OOP
 - hw15-TODO
+- hw16-json
+- hw18-jdbc
+- hw21-jpql
