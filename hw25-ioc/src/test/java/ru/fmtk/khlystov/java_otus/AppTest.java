@@ -65,6 +65,5 @@ class AppTest {
             assertThat(fieldValue).isNotNull().isInstanceOfAny(IOService.class, PlayerService.class,
                     EquationPreparer.class, PrintStream.class, Scanner.class);
         }
-
     }
 }

@@ -4,6 +4,7 @@ import ru.fmtk.khlystov.java_otus.services.GameProcessor;
 import ru.fmtk.khlystov.java_otus.appcontainer.AppComponentsContainerImpl;
 import ru.fmtk.khlystov.java_otus.appcontainer.api.AppComponentsContainer;
 import ru.fmtk.khlystov.java_otus.config.AppConfig;
+import ru.fmtk.khlystov.java_otus.services.GameProcessorImpl;
 
 /*
 В классе AppComponentsContainerImpl реализовать обработку, полученной в конструкторе конфигурации,
@@ -25,9 +26,9 @@ public class App {
         AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig.class);
 
         // Приложение должно работать в каждом из указанных ниже вариантов
-        GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
+        //GameProcessor gameProcessor = container.getAppComponent(GameProcessor.class);
         //GameProcessor gameProcessor = container.getAppComponent(GameProcessorImpl.class);
-        //GameProcessor gameProcessor = container.getAppComponent("gameProcessor");
+        GameProcessor gameProcessor = container.getAppComponent("gameProcessor");
 
         gameProcessor.startGame();
     }
