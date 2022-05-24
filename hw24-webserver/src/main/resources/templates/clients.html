@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Work with clients</title>
+    <script>
+        function createNewClient() {
+            const clientCreationError = document.getElementById('clientCreationError');
+            const name = document.getElementById('clientName').value;
+            const address = document.getElementById('clientAddress').value;
+            fetch('api/client', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({name: name, address: address})
+            })
+                .then(response => {
+                    if(response.ok) {
+                        console.log("Have saved client: " + response.body);
+                        location.reload();
+                    } else {
+                        clientCreationError.innerHTML = 'Error creating client';
+                    }
+                });
+        }
+    </script>
+</head>
+
+<body>
+<div>
+    <h4>Создать клиента</h4>
+    <input type="text" id = "clientName" value="" placeholder="Введите имя клиента">
+    <br/>
+    <input type="text" id = "clientAddress" value="" placeholder="Введите адрес клиента">
+    <br/>
+    <button onclick="createNewClient()">Создать</button>
+    <div id="clientCreationError"></div>
+<br/>
+</div>
+
+<h4>Таблица клиентов</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 100px">Адрес</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list clients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td>${(client.address.street)!"не указан"}</td>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+</body>
+</html>
