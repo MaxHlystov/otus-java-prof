@@ -20,7 +20,8 @@
                         console.log("Have saved client: " + response.body);
                         location.reload();
                     } else {
-                        clientCreationError.innerHTML = 'Error creating client';
+                        clientCreationError.innerHTML = 'Error creating client: <pre>' +
+                            response.statusText + '</pre>';
                     }
                 });
         }
