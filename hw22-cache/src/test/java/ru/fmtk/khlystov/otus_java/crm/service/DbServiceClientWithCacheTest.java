@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.fmtk.khlystov.otus_java.base.AbstractHibernateTest;
 import ru.fmtk.khlystov.otus_java.crm.model.Client;
+import ru.fmtk.khlystov.otus_java.mycache.CacheKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +58,27 @@ class DbServiceClientWithCacheTest extends AbstractHibernateTest {
         assertThat(loadedSavedClient).isPresent();
         assertThat(stat.getLoadCount()).isEqualTo(0L);
         assertThat(cacheLog).containsExactlyInAnyOrder(ids[0] + "ADD", ids[1] + "ADD", ids[2] + "ADD", ids[0] + "GET");
+    }
+
+    @Test
+    @DisplayName(" добавлять данные в кэш если там не было значения")
+    void firstSelectShouldAddToCache() {
+        final int clientNumber = 3;
+        final List<String> cacheLog = new ArrayList<>();
+        clientById.addListener((key, value, action) -> cacheLog.add(key + action));
+
+        long[] ids = inertClients(clientNumber);
+        // Make cache empty
+        Arrays.stream(ids).forEach(id -> clientById.remove(new CacheKey<>(id)));
+        cacheLog.clear();
+        // Read client two times
+        var loadedSavedClient = dbServiceClient.getClient(ids[0]);
+        loadedSavedClient = dbServiceClient.getClient(ids[0]);
+
+        var stat = getUsageStatistics();
+        assertThat(loadedSavedClient).isPresent();
+        assertThat(stat.getLoadCount()).isEqualTo(1L);
+        assertThat(cacheLog).containsExactlyInAnyOrder(ids[0] + "GET", ids[0] + "ADD", ids[0] + "GET");
     }
 
     @Test
