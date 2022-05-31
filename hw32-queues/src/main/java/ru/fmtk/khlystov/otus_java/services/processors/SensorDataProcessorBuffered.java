@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +42,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
                     SensorData[] array = dataBuffer.toArray(SensorData[]::new);
                     dataBuffer.clear();
                     Arrays.sort(array, Comparator.comparing(SensorData::getMeasurementTime));
-                    writer.writeBufferedData(Arrays.stream(array)
-                            .collect(Collectors.toCollection(ArrayList<SensorData>::new)));
+                    writer.writeBufferedData(Arrays.asList(array));
                 } catch (Exception e) {
                     log.error("Ошибка в процессе записи буфера", e);
                     throw new RuntimeException(e);
