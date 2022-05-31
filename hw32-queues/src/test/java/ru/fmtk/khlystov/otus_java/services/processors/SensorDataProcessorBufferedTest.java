@@ -153,6 +153,9 @@ class SensorDataProcessorBufferedTest {
             latchReady.countDown();
             awaitLatch(latchReady);
             sensorDataList.forEach(processor::process);
+            // Sometimes the process function adds data after flusherThread was gone,
+            // so %%assertThat(writer.getData()).hasSize(sensorDataList.size());%% throws error
+            processor.onProcessingEnd();
             processFlag.set(false);
         });
         var flusherThread = new Thread(() -> {
