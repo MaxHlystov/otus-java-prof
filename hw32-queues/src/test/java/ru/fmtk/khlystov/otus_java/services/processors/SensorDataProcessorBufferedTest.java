@@ -31,7 +31,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-
 @ExtendWith(MockitoExtension.class)
 class SensorDataProcessorBufferedTest {
     private static final Logger log = LoggerFactory.getLogger(SensorDataProcessorBufferedTest.class);
@@ -153,17 +152,14 @@ class SensorDataProcessorBufferedTest {
             latchReady.countDown();
             awaitLatch(latchReady);
             sensorDataList.forEach(processor::process);
-            // Sometimes the process function adds data after flusherThread was gone,
-            // so %%assertThat(writer.getData()).hasSize(sensorDataList.size());%% throws error
-            processor.onProcessingEnd();
             processFlag.set(false);
         });
         var flusherThread = new Thread(() -> {
             latchReady.countDown();
             awaitLatch(latchReady);
-            while (processFlag.get()) {
+            do {
                 processor.flush();
-            }
+            } while (processFlag.get());
         });
 
         writerThread.start();
