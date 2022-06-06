@@ -21,7 +21,7 @@ public class CurrentNumberFromServerServiceImpl implements CurrentNumberFromServ
     private final int endValue;
     private final AtomicInteger currentValue;
     private final AtomicBoolean isStarted;
-    private ManagedChannel channel;
+    private volatile ManagedChannel channel;
 
     public CurrentNumberFromServerServiceImpl(int startValue, int endValue) {
         this.startValue = startValue;
@@ -40,9 +40,11 @@ public class CurrentNumberFromServerServiceImpl implements CurrentNumberFromServ
         if (!this.isStarted.compareAndSet(false, true)) {
             return false;
         }
-        this.channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
-                .usePlaintext()
-                .build();
+        synchronized (this) {
+            this.channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
+                    .usePlaintext()
+                    .build();
+        }
         final NumbersStreamServiceGrpc.NumbersStreamServiceStub stub =
                 NumbersStreamServiceGrpc.newStub(channel);
 
@@ -75,6 +77,13 @@ public class CurrentNumberFromServerServiceImpl implements CurrentNumberFromServ
 
     @Override
     public void close() {
-        channel.shutdown();
+        if (channel != null) {
+            synchronized (this) {
+                if (channel != null) {
+                    channel.shutdown();
+                    channel = null;
+                }
+            }
+        }
     }
 }
