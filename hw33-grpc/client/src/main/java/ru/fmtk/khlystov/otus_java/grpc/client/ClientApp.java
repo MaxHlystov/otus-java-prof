@@ -19,9 +19,8 @@ public class ClientApp {
             HwClientNumbersGenerator generator = new HwClientNumbersGenerator(
                     START_CLIENT_VALUE, END_CLIENT_VALUE,
                     serverNumberService,
-                    new NumberSequenceListenerImpl(),
                     TwistedComputation::new);
-            generator.generate();
+            generator.generate(new NumberSequenceListenerImpl());
         }
     }
 }

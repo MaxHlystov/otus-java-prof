@@ -16,24 +16,21 @@ public class HwClientNumbersGenerator {
     private final int start;
     private final int end;
     private final CurrentNumberFromServerService serverNumberService;
-    private final NumberSequenceListener listener;
     private final Function<Supplier<Integer>, IntUnaryOperator> computationAlgorithmFactory;
     private final AtomicBoolean isStarted;
 
     public HwClientNumbersGenerator(final int start, final int end,
                                     final CurrentNumberFromServerService serverNumberService,
-                                    final NumberSequenceListener listener,
                                     final Function<Supplier<Integer>, IntUnaryOperator> computationAlgorithmFactory) {
         this.start = start;
         this.end = end;
         this.serverNumberService = serverNumberService;
-        this.listener = listener;
         this.computationAlgorithmFactory = computationAlgorithmFactory;
         this.isStarted = new AtomicBoolean(false);
 
     }
 
-    public void generate() {
+    public void generate(final NumberSequenceListener listener) {
         if (this.isStarted.compareAndSet(false, true)) {
             if (!serverNumberService.start()) {
                 log.error("Couldn't start server number generator");
