@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ru.fmtk.khlystov.otus_java.protobuf.generated;
+
+option java_multiple_files = true;
+
+message GenerateRangeRequest {
+  int32 firstValue = 1;
+  int32 lastValue = 2;
+}
+
+message GenerateRangeResponse {
+  int32 value = 1;
+}
+
+
+service NumbersStreamService {
+  rpc range(GenerateRangeRequest) returns (stream GenerateRangeResponse);
+}
