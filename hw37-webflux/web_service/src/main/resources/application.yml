@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  thymeleaf:
+    reactive:
+      max-chunk-size: 8192
+
+db.server:
+  url: "http://localhost:8081"
