@@ -58,12 +58,12 @@ public class ClientRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/client/all/",
             produces = MediaType.APPLICATION_NDJSON_VALUE)
-    public Flux<ClientDto> getAllClients() {
+    public Mono<List<ClientDto>> getAllClients() {
         var future = CompletableFuture
                 .supplyAsync(() -> clientService.findAll().stream()
                         .map(ClientToDtoConverter::convert)
                         .collect(Collectors.toList()), executor);
-        return Flux.from(Mono.fromFuture(future)).flatMap((List<ClientDto> list) -> Flux.fromStream(list.stream()));
+        return Mono.fromFuture(future);
     }
 
 }

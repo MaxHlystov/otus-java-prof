@@ -25,27 +25,6 @@ public class DbDataService {
                 .build();
     }
 
-//    @GetMapping(value = "/data/{seed}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-//    public Flux<StringValue> data(@PathVariable("seed") long seed) {
-//        log.info("request for data, seed:{}", seed);
-//
-//        return client.get().uri(String.format("/data/%d", seed))
-//                .accept(MediaType.APPLICATION_NDJSON)
-//                .retrieve()
-//                .bodyToFlux(StringValue.class)
-//                .doOnNext(val -> log.info("val:{}", val));
-//    }
-//
-//    @GetMapping(value = "/data-mono/{seed}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public Mono<StringValue> dataMono(@PathVariable("seed") long seed) {
-//        log.info("request for string data-mono, seed:{}", seed);
-//
-//        return client.get().uri(String.format("/data-mono/%d", seed))
-//                .retrieve()
-//                .bodyToMono(StringValue.class)
-//                .doOnNext(val -> log.info("val:{}", val));
-//    }
-
     public Flux<ClientDto> findAll() {
         return client.get().uri("/api/client/all/")
                 .accept(MediaType.APPLICATION_NDJSON)
