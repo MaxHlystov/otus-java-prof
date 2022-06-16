@@ -12,3 +12,11 @@ Khlystov Maksim
 - hw16-json
 - hw18-jdbc
 - hw21-jpql
+- hw22-cache
+- hw24-webserver
+- hw25-ioc
+- hw28-spring-jdbc
+- hw31-executors
+- hw32-queues
+- hw33-grpc client/server
+- hw37-webflux db_service and web_service
